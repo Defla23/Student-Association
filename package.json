@@ -1,0 +1,28 @@
+{
+  "name": "StudentsAssociation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": " npm run build && node dist/index.js",
+    "dev": "tsx watch src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.17.0",
+  "devDependencies": {
+    "@types/mssql": "^9.1.9",
+    "@types/node": "^25.3.0",
+    "mssql": "link:/mssql",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "body-parser": "^2.2.2",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  }
+}
