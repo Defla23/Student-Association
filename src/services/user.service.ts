@@ -58,6 +58,7 @@ export const UserService = {
     const payload = {
       sub: user.id,
       email: user.email,
+      role: user.role,
       exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour
     };
 
