@@ -1,12 +1,10 @@
 import { Request, Response } from "express";
-import { UserService } from "../services/user.service";
+import { UserService, LoginPayload } from "../services/user.service";
 
 export const UserController = {
-  // GET /users
   async list(req: Request, res: Response) {
     try {
       const users = await UserService.list();
-      // hide passwords
       const safeUsers = users.map(({ password, ...u }) => u);
       return res.json(safeUsers);
     } catch (err) {
@@ -15,7 +13,6 @@ export const UserController = {
     }
   },
 
-  // GET /users/:id
   async get(req: Request, res: Response) {
     const id = Number(req.params.id);
     if (!id) return res.status(400).json({ message: "Invalid id" });
@@ -31,7 +28,6 @@ export const UserController = {
     }
   },
 
-  // POST /users
   async create(req: Request, res: Response) {
     const { first_name, last_name, email, password } = req.body;
     if (!first_name || !last_name || !email || !password) {
@@ -40,7 +36,7 @@ export const UserController = {
 
     try {
       const user = await UserService.create(req.body);
-      const { password, ...safeUser } = user; // remove password
+      const { password, ...safeUser } = user;
       return res.status(201).json(safeUser);
     } catch (err: any) {
       console.error(err);
@@ -51,7 +47,6 @@ export const UserController = {
     }
   },
 
-  // PUT /users/:id
   async update(req: Request, res: Response) {
     const id = Number(req.params.id);
     if (!id) return res.status(400).json({ message: "Invalid id" });
@@ -67,7 +62,6 @@ export const UserController = {
     }
   },
 
-  // DELETE /users/:id
   async delete(req: Request, res: Response) {
     const id = Number(req.params.id);
     if (!id) return res.status(400).json({ message: "Invalid id" });
@@ -81,23 +75,22 @@ export const UserController = {
     }
   },
 
-  // POST /users/login
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: "Missing credentials" });
 
     try {
-      const user = await UserService.login(email, password);
-      if (!user) return res.status(401).json({ message: "Invalid credentials" });
-
-      return res.json(user); // password already removed in service
-    } catch (err) {
+      const payload: LoginPayload = await UserService.login(email, password);
+      return res.json(payload);
+    } catch (err: any) {
       console.error(err);
+      if (err.message === "user not found" || err.message === "invalid credentials") {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
 
-  // POST /users/verify-code
   async verifyCode(req: Request, res: Response) {
     const { email, code } = req.body;
     if (!email || !code) return res.status(400).json({ message: "Missing fields" });
@@ -106,7 +99,8 @@ export const UserController = {
       const user = await UserService.verifyCode(email, code);
       if (!user) return res.status(400).json({ message: "Invalid code or email" });
 
-      return res.json({ message: "User verified successfully", user });
+      const { password, ...safeUser } = user;
+      return res.json({ message: "User verified successfully", user: safeUser });
     } catch (err) {
       console.error(err);
       return res.status(500).json({ message: "Internal Server Error" });
