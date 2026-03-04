@@ -30,6 +30,8 @@ VALUES
 GO
 select * from users
 
+SELECT email, password FROM Users WHERE id = 10;
+
 DROP TABLE IF EXISTS Education;
 CREATE TABLE Education (
     id INT IDENTITY(1,1) PRIMARY KEY,
