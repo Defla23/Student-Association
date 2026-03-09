@@ -2,6 +2,8 @@ import { UserRepository } from "../repository/user.repository";
 import { NewUser, UpdateUser, User } from "../types/user.types";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../mailer/mailer";
+import { emailTemplate } from "../mailer/emailtemplate";
 
 // Type for login payload
 export interface LoginPayload {
@@ -24,12 +26,25 @@ export const UserService = {
     const existing = await UserRepository.getByEmail(data.email);
     if (existing) throw new Error("EmailExists");
 
-    // Hash password
+    //1. Hash password
     if (data.password) {
       data.password = await bcrypt.hash(data.password, 10);
     }
+      //2. save user in the db user
+    const user = await UserRepository.create(data);
+    
+    //3. send a welcome email to the user
+    try {
+      await sendEmail(
+        user.email,
+        'Welcome to the Student Association',
+        emailTemplate.welcome(user.first_name)
+      )
+    } catch (err) {
+      console.error("Failed to send welcome email:", err);
+    }
+     return user;
 
-    return UserRepository.create(data);
   },
 
   async update(
