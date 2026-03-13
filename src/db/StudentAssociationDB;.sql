@@ -28,6 +28,9 @@ VALUES
 ('Jane', 'Smith', 'jane@example.com', 'pass123', '0733333333', '654321', 'student', 0, 0),
 ('Mike', 'Brown', 'mike@example.com', 'pass123', '0744444444', '987654', 'student', 0, 0);
 GO
+ALTER TABLE Users
+ADD verification_code_expiry DATETIME NULL;
+
 select * from users
 
 SELECT email, password FROM Users WHERE id = 10;

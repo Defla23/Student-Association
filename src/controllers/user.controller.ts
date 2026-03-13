@@ -92,12 +92,12 @@ export const UserController = {
   },
 
   async verifyCode(req: Request, res: Response) {
-    const { email, code } = req.body;
-    if (!email || !code) return res.status(400).json({ message: "Missing fields" });
+    const { email, verification_code } = req.body;
+    if (!email || !verification_code) return res.status(400).json({ message: "Missing fields" });
 
     try {
-      const user = await UserService.verifyCode(email, code);
-      if (!user) return res.status(400).json({ message: "Invalid code or email" });
+      const user = await UserService.verifyCode(email, verification_code);
+      if (!user) return res.status(400).json({ message: "Invalid verification_code or email" });
 
       const { password, ...safeUser } = user;
       return res.json({ message: "User verified successfully", user: safeUser });

@@ -6,6 +6,7 @@ export interface User {
   password: string;
   phone_number?: string | null;
   verification_code?: string | null;
+  verification_code_expiry?: Date | null;
   role?: string;
   is_verified?: boolean;
   is_profile_complete?: boolean;
