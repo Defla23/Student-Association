@@ -92,4 +92,28 @@ export const UserService = {
 
     return verifiedUser;
   },
+
+  async resendVerificationCode(email: string): Promise<User> {
+  const user = await UserRepository.getByEmail(email);
+  if (!user) throw new Error("User not found");
+  if (user.is_verified) throw new Error("User already verified");
+
+  const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+  await UserRepository.setVerificationCode(email, newCode, expiry);
+
+  try {
+    await sendEmail(
+      email,
+      "Your New Verification Code",
+      emailTemplate.verify(user.first_name, newCode)
+    );
+  } catch (err) {
+    console.error("Failed to send verification email:", err);
+    throw new Error("Failed to send verification code");
+  }
+
+  return user;
+}
 };

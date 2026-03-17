@@ -6,6 +6,7 @@ import articlesRoutes from "./routes/articles.routes";
 import registerConcernsRoutes from "./routes/concerns.routes";
 import bursaryRoutes from "./routes/bursary.routes";
 import registerEducationRoutes from "./routes/education.routes";
+import cors from "cors";
 
 
 
@@ -15,12 +16,23 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+
+ app.use(
+    cors({
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST", "PUT", "DELETE"],
+      credentials: true,
+    }),
+  );
+
 //register routes
 userRoutes(app);
 articlesRoutes(app);
 registerConcernsRoutes(app);
 bursaryRoutes(app);
 registerEducationRoutes(app);
+
+
 
 
 
