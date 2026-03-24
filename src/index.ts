@@ -7,6 +7,8 @@ import registerConcernsRoutes from "./routes/concerns.routes";
 import bursaryRoutes from "./routes/bursary.routes";
 import registerEducationRoutes from "./routes/education.routes";
 import cors from "cors";
+import { profile } from "node:console";
+import {profileRoutes} from "./routes/profile.routes";
 
 
 
@@ -31,6 +33,7 @@ articlesRoutes(app);
 registerConcernsRoutes(app);
 bursaryRoutes(app);
 registerEducationRoutes(app);
+profileRoutes(app);
 
 
 

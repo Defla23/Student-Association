@@ -5,11 +5,11 @@ import { Article, NewArticle, UpdateArticle } from "../types/articles.types";
 const TABLE = "Articles";
 
 export const ArticleRepository = {
-  async getAll(): Promise<Article[]> {
-    const pool = await getPool();
-    const result = await pool.request().query(`SELECT * FROM ${TABLE}`);
-    return result.recordset;
-  },
+  // async getAll(): Promise<Article[]> {
+  //   const pool = await getPool();
+  //   const result = await pool.request().query(`SELECT * FROM ${TABLE}`);
+  //   return result.recordset;
+  // },
 
   async getById(id: number): Promise<Article | null> {
     const pool = await getPool();
@@ -35,6 +35,20 @@ export const ArticleRepository = {
       `);
     return result.recordset[0];
   },
+  async getAll(): Promise<Article[]> {
+  const pool = await getPool();
+
+  const result = await pool.request().query(`
+    SELECT 
+      A.*,
+      U.first_name
+    FROM Articles A
+    JOIN Users U ON A.user_id = U.id
+    ORDER BY A.created_at DESC
+  `);
+
+  return result.recordset;
+},
 
   async update(id: number, updates: UpdateArticle): Promise<Article | null> {
     const pool = await getPool();
