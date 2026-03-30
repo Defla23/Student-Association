@@ -84,7 +84,7 @@ export const UserController = {
       return res.json(payload);
     } catch (err: any) {
       console.error(err);
-      if (err.message === "user not found" || err.message === "invalid credentials") {
+      if (err.message === "user not found"  || err.message === "Please verify your email first"  ) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       return res.status(500).json({ message: "Internal Server Error" });

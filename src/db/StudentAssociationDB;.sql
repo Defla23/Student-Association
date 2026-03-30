@@ -31,9 +31,13 @@ GO
 ALTER TABLE Users
 ADD verification_code_expiry DATETIME NULL;
 
-select * from users
+UPDATE Users
+SET role = 'admin'
+WHERE id = 7;
 
-SELECT email, password FROM Users WHERE id = 10;
+select * from users;
+
+SELECT email, password FROM Users WHERE id = 3;
 
 DROP TABLE IF EXISTS Education;
 CREATE TABLE Education (

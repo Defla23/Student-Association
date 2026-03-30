@@ -3,7 +3,12 @@ import { Education, NewEducation } from "../types/education.types";
 
 export const findAll = async (): Promise<Education[]> => {
   const pool = await getPool();
-  const result = await pool.request().query("SELECT * FROM Education");
+  const result = await pool.request().query(`
+    SELECT e.*,
+           u.first_name + ' ' + u.last_name AS student_name
+    FROM Education e
+    JOIN Users u ON e.user_id = u.id
+  `);
   return result.recordset;
 };
 
