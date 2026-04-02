@@ -127,3 +127,66 @@ GO
 
 
 select * from Concerns
+
+
+DROP TABLE IF EXISTS ConcernRatings;
+GO
+
+CREATE TABLE ConcernRatings (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    concern_id INT NOT NULL,
+    user_id INT NOT NULL,
+    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    created_at DATETIME DEFAULT GETDATE(),
+
+    
+    CONSTRAINT FK_Rating_Concern
+        FOREIGN KEY (concern_id)
+        REFERENCES Concerns(id)
+        ON DELETE CASCADE,
+
+    
+    CONSTRAINT FK_Rating_User
+        FOREIGN KEY (user_id)
+        REFERENCES Users(id)
+        ON DELETE NO ACTION,
+
+    CONSTRAINT UQ_User_Concern_Rating
+        UNIQUE (concern_id, user_id)
+);
+GO
+INSERT INTO ConcernRatings (concern_id, user_id, rating)
+VALUES
+(1, 2, 5),
+(1, 3, 4),
+(1, 4, 3),
+(2, 2, 4),
+(2, 3, 5);
+GO
+select * from ConcernRatings
+
+SELECT 
+    concern_id,
+    AVG(CAST(rating AS FLOAT)) * 20 AS rating_percent
+FROM ConcernRatings
+GROUP BY concern_id;
+
+drop table if exists ConcernComments;
+CREATE TABLE ConcernComments (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    concern_id INT NOT NULL,
+    user_id INT NOT NULL,
+    comment NVARCHAR(MAX) NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (concern_id) REFERENCES Concerns(id),
+    FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+GO  
+INSERT INTO ConcernComments (concern_id, user_id, comment)
+VALUES
+(1, 2, 'This issue is being looked into.'),
+(1, 3, 'Any updates on this?'),
+(2, 2, 'We are working on the exam schedule.'),
+(2, 3, 'Please provide more details on the timetable.');
+GO
+select * from ConcernComments
